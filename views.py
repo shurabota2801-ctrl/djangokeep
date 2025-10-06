@@ -315,30 +315,25 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 from .models import Article  # ваша модель
 
-def article_list(request):
-    # Получаем все объекты из базы данных
-    all_articles = Article.objects.all().order_by('-created_at')
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Note
+
+def notes_list(request):
+    # 1. Получаем ВСЕ данные
+    all_notes = Note.objects.all().order_by('-created_at')
     
-    # Создаем пагинатор: первый параметр - список объектов, второй - количество на странице
-    paginator = Paginator(all_articles, 10)  # 10 статей на странице
+    # 2. Создаем пагинатор: (что пагинируем, сколько на страницу)
+    paginator = Paginator(all_notes, 4)  # 4 заметки на страницу
     
-    # Получаем номер страницы из GET-параметра
-    page_number = request.GET.get('page')
+    # 3. Получаем номер текущей страницы из URL
+    page_number = request.GET.get('page')  # из ?page=2
     
-    try:
-        # Получаем объект страницы
-        page_obj = paginator.page(page_number)
-    except PageNotAnInteger:
-        # Если page не integer, показываем первую страницу
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        # Если page вне диапазона, показываем последнюю страницу
-        page_obj = paginator.page(paginator.num_pages)
+    # 4. Получаем объект текущей страницы
+    page_obj = paginator.get_page(page_number)
     
-    # Передаем объект страницы в шаблон
-    context = {
-        'page_obj': page_obj,
-        'paginator': paginator,
-    }
-    return render(request, 'articles/article_list.html', context)
+    # 5. Передаем в шаблон только объект страницы
+    return render(request, 'notes/list.html', {
+        'page_obj': page_obj  # ← ключевой момент!
+    })
 '''

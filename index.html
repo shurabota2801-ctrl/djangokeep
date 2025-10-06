@@ -1,0 +1,26 @@
+<!-- Пагинатор -->
+<!-- 1. Отображаем записи ТЕКУЩЕЙ страницы -->
+<div class="notes">
+    {% for note in page_obj %}
+        <div class="note">
+            <h3>{{ note.title }}</h3>
+            <p>{{ note.content }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- 2. Пагинация -->
+<div class="pagination">
+    <!-- Предыдущая страница -->
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+    {% endif %}
+    
+    <!-- Текущая страница -->
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    
+    <!-- Следующая страница -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Вперед →</a>
+    {% endif %}
+</div>
